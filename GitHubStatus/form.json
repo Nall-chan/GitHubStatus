@@ -1,0 +1,9 @@
+{
+	"elements":
+	[
+	],
+	"actions":
+	[
+		{ "type": "Button", "label": "Update", "onClick": "GH_Update($id);" }
+        ]	
+}
