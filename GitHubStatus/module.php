@@ -16,12 +16,12 @@ class GitHubStatus extends IPSModule
 
         $this->RegisterProfileIntegerEx("Status.GitHub", "Information", "", "", Array(
             Array(1, "keine", "", 0x00FF00),
-            Array(2, "geringe", "", 0xFF8000),
+            Array(2, "geringe ", "", 0xFF8000),
             Array(3, "starke", "", 0xFF0000)
         ));
 
 
-        $this->RegisterVariableInteger("Status", "Status", "Status.GitHub", 1);
+        $this->RegisterVariableInteger("Status", "Beeinträchtigungen", "Status.GitHub", 1);
         $this->RegisterVariableInteger("TimeStamp", "Aktualisierung", "~UnixTimestamp", 2);
         $this->RegisterVariableString("LastMessage", "Letzte Meldung", "", 3);
 
