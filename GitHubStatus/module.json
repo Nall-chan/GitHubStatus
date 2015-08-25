@@ -1,8 +1,8 @@
 {
     "id": "{F790E9C6-B6D5-4FF1-B521-0B65A4CDA907}",
     "name": "GitHubStatus",
-    "type": 0,
-    "vendor": "",
+    "type": 3,
+    "vendor": "GitHub",
     "aliases": 
     [
         "GitHub-Status"
