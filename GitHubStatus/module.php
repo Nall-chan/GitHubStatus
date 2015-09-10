@@ -33,16 +33,20 @@ class GitHubStatus extends IPSModule
 
     private function GetStatus()
     {
-        $link = "https://status.github.com/api/last-message.json";
+        $link = "status.github.com/api/last-message.json";
 
         $ctx = stream_context_create(array(
             'http' => array(
-                'timeout' => 3
+                'timeout' => 5
             )
                 )
         );
-        $jsonstring = file_get_contents($link, 0, $ctx);
-
+        $jsonstring = @file_get_contents('https://'.$link, false, $ctx);
+        if ($jsonstring === false)
+            $jsonstring = @file_get_contents('http://'.$link, false, $ctx);
+            if ($jsonstring === false)
+                throw new Exception("Cannot load GitHub Status.");
+            
         $Data = json_decode($jsonstring);
         if ($Data == null)
         {
