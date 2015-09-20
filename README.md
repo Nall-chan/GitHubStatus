@@ -30,7 +30,7 @@ Dieses Modul zeigt den letzten Status der GitHub-Dienste an.
 ## 4. Funktionsreferenz
 
 ```php
-GH_Update( interger $InstanceID );
+GH_Update( integer $InstanceID );
 ```
  Startet eine neue Abfrage.  
 

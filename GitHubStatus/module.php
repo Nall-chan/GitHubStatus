@@ -52,7 +52,7 @@ class GitHubStatus extends IPSModule
         {
             throw new Exception("Cannot load GitHub Status.");
         }
-
+        
         return $Data;
     }
 
