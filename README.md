@@ -1,4 +1,4 @@
-﻿# GitHub-Status
+# GitHub-Status
 
 Dieses Modul zeigt den letzten Status der GitHub-Dienste an.
 
