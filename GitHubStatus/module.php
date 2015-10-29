@@ -5,13 +5,11 @@ class GitHubStatus extends IPSModule
 
     public function Create()
     {
-        //Never delete this line!
         parent::Create();
     }
 
     public function ApplyChanges()
     {
-        //Never delete this line!
         parent::ApplyChanges();
 
         $this->RegisterProfileIntegerEx("Status.GitHub", "Information", "", "", Array(
@@ -20,13 +18,19 @@ class GitHubStatus extends IPSModule
             Array(3, "starke", "", 0xFF0000)
         ));
 
-
         $this->RegisterVariableInteger("Status", "Beeinträchtigungen", "Status.GitHub", 1);
         $this->RegisterVariableInteger("TimeStamp", "Aktualisierung", "~UnixTimestamp", 2);
         $this->RegisterVariableString("LastMessage", "Letzte Meldung", "", 3);
 
         // 15 Minuten Timer
-        $this->RegisterTimer("UpdateGitHubStatus", 5 * 60, 'GH_Update($_IPS[\'TARGET\']);');
+        try
+        {
+            $this->RegisterTimer("UpdateGitHubStatus", 5 * 60, 'GH_Update($_IPS[\'TARGET\']);');
+        } catch (Exception $exc)
+        {
+            trigger_error($exc->getMessage(), $exc->getCode());
+            return;
+        }
         // Nach übernahme der Einstellungen oder IPS-Neustart einmal Update durchführen.
         $this->Update();
     }
@@ -41,24 +45,32 @@ class GitHubStatus extends IPSModule
             )
                 )
         );
-        $jsonstring = @file_get_contents('https://'.$link, false, $ctx);
+        $jsonstring = @file_get_contents('https://' . $link, false, $ctx);
         if ($jsonstring === false)
-            $jsonstring = @file_get_contents('http://'.$link, false, $ctx);
-            if ($jsonstring === false)
-                throw new Exception("Cannot load GitHub Status.");
-            
+            $jsonstring = @file_get_contents('http://' . $link, false, $ctx);
+        if ($jsonstring === false)
+            throw new Exception("Cannot load GitHub Status.", E_USER_ERROR);
+
         $Data = json_decode($jsonstring);
         if ($Data == null)
         {
-            throw new Exception("Cannot load GitHub Status.");
+            throw new Exception("Cannot load GitHub Status.", E_USER_ERROR);
         }
-        
+
         return $Data;
     }
 
     public function Update()
     {
-        $NewStatus = $this->GetStatus();
+        try
+        {
+            $NewStatus = $this->GetStatus();            
+        } catch (Exception $exc)
+        {
+            trigger_error($exc->getMessage(),$exc->getCode());
+            return false;
+        }
+
         $this->SetValueString("LastMessage", (string) $NewStatus->body);
 
         $Date = new DateTime((string) $NewStatus->created_on);
@@ -95,6 +107,22 @@ class GitHubStatus extends IPSModule
     {
         $id = @IPS_GetObjectIDByIdent($Name, $this->InstanceID);
         if ($id === false)
+            $id = 0;
+
+
+        if ($id > 0)
+        {
+            if (!IPS_EventExists($id))
+                throw new Exception("Ident with name " . $Name . " is used for wrong object type", E_USER_ERROR);
+
+            if (IPS_GetEvent($id)['EventType'] <> 1)
+            {
+                IPS_DeleteEvent($id);
+                $id = 0;
+            }
+        }
+
+        if ($id == 0)
         {
             $id = IPS_CreateEvent(1);
             IPS_SetParent($id, $this->InstanceID);
@@ -108,8 +136,7 @@ class GitHubStatus extends IPSModule
             IPS_SetEventCyclic($id, 0, 0, 0, 0, 1, $Interval);
 
             IPS_SetEventActive($id, true);
-        }
-        else
+        } else
         {
             IPS_SetEventCyclic($id, 0, 0, 0, 0, 1, 1);
 
@@ -117,11 +144,25 @@ class GitHubStatus extends IPSModule
         }
     }
 
+    protected function UnregisterTimer($Name)
+    {
+        $id = @IPS_GetObjectIDByIdent($Name, $this->InstanceID);
+        if ($id > 0)
+        {
+            if (!IPS_EventExists($id))
+                throw new Exception('Timer not present', E_USER_NOTICE);
+            IPS_DeleteEvent($id);
+        }
+    }
+
     protected function SetTimerInterval($Name, $Interval)
     {
         $id = @IPS_GetObjectIDByIdent($Name, $this->InstanceID);
         if ($id === false)
-            throw new Exception('Timer not present');
+            throw new Exception('Timer not present', E_USER_ERROR);
+        if (!IPS_EventExists($id))
+            throw new Exception('Timer not present', E_USER_ERROR);
+
         $Event = IPS_GetEvent($id);
 
         if ($Interval < 1)
@@ -161,8 +202,7 @@ class GitHubStatus extends IPSModule
         if (!IPS_VariableProfileExists($Name))
         {
             IPS_CreateVariableProfile($Name, 1);
-        }
-        else
+        } else
         {
             $profile = IPS_GetVariableProfile($Name);
             if ($profile['ProfileType'] != 1)
@@ -180,8 +220,7 @@ class GitHubStatus extends IPSModule
         {
             $MinValue = 0;
             $MaxValue = 0;
-        }
-        else
+        } else
         {
             $MinValue = $Associations[0][0];
             $MaxValue = $Associations[sizeof($Associations) - 1][0];
