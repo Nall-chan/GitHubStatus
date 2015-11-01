@@ -49,12 +49,12 @@ class GitHubStatus extends IPSModule
         if ($jsonstring === false)
             $jsonstring = @file_get_contents('http://' . $link, false, $ctx);
         if ($jsonstring === false)
-            throw new Exception("Cannot load GitHub Status.", E_USER_ERROR);
+            throw new Exception("Cannot load GitHub Status.", E_USER_NOTICE);
 
         $Data = json_decode($jsonstring);
         if ($Data == null)
         {
-            throw new Exception("Cannot load GitHub Status.", E_USER_ERROR);
+            throw new Exception("Cannot load GitHub Status.", E_USER_NOTICE);
         }
 
         return $Data;
@@ -113,7 +113,7 @@ class GitHubStatus extends IPSModule
         if ($id > 0)
         {
             if (!IPS_EventExists($id))
-                throw new Exception("Ident with name " . $Name . " is used for wrong object type", E_USER_ERROR);
+                throw new Exception("Ident with name " . $Name . " is used for wrong object type", E_USER_WARNING);
 
             if (IPS_GetEvent($id)['EventType'] <> 1)
             {
@@ -159,9 +159,9 @@ class GitHubStatus extends IPSModule
     {
         $id = @IPS_GetObjectIDByIdent($Name, $this->InstanceID);
         if ($id === false)
-            throw new Exception('Timer not present', E_USER_ERROR);
+            throw new Exception('Timer not present', E_USER_WARNING);
         if (!IPS_EventExists($id))
-            throw new Exception('Timer not present', E_USER_ERROR);
+            throw new Exception('Timer not present', E_USER_WARNING);
 
         $Event = IPS_GetEvent($id);
 
