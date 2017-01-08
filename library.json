@@ -1,9 +1,13 @@
 {
-	"id": "{822B6176-4049-4286-AA1E-A7A1C221548B}",
-	"author": "Michael Tröger",
-	"name": "GitHub Status",
-	"url": "git.nall-chan.net",
-	"version": "1.0",
-	"build": 0,
-	"date": 0
+    "id": "{822B6176-4049-4286-AA1E-A7A1C221548B}",
+    "author": "Michael Tröger",
+    "name": "GitHub Status",
+    "url": "https://github.com/Nall-chan/IPSGitHubStatus",
+    "version": "1.01",
+    "build": 101,
+    "date": 1483881676,
+    "title": "Zeigt den aktuellen Status der GitHub-Dienste an.",
+    "description": "Über die JSON-API von GitHub wird der aktuelle Status ermittelt und in Variablen abgebildet.",
+    "tags": ["GitHub", "Visualisierung"],
+    "req_ips_version": "4.0"
 }

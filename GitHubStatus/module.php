@@ -1,13 +1,52 @@
 <?
 
+/**
+ * @addtogroup githubstatus
+ * @{
+ *
+ * @package       GitHubStatus
+ * @file          module.php
+ * @author        Michael Tröger <micha@nall-chan.net>
+ * @copyright     2016 Michael Tröger
+ * @license       https://creativecommons.org/licenses/by-nc-sa/4.0/ CC BY-NC-SA 4.0
+ * @version       1.01
+ */
+
+/**
+ * GitHubStatus ist die Klasse für das IPS-Modul 'GitHub-Status'.
+ * Erweitert IPSModule 
+ */
 class GitHubStatus extends IPSModule
 {
 
+    /**
+     * Interne Funktion des SDK.
+     *
+     * @access public
+     */
     public function Create()
     {
         parent::Create();
     }
 
+    /**
+     * Interne Funktion des SDK.
+     *
+     * @access public
+     */
+    public function Destroy()
+    {
+        if (!IPS_InstanceExists($this->InstanceID))
+            return;
+        $this->UnregisterProfil("Status.GitHub");
+        parent::Destroy();
+    }
+
+    /**
+     * Interne Funktion des SDK.
+     *
+     * @access public
+     */
     public function ApplyChanges()
     {
         parent::ApplyChanges();
@@ -26,7 +65,8 @@ class GitHubStatus extends IPSModule
         try
         {
             $this->RegisterTimer("UpdateGitHubStatus", 300000, 'GH_Update($_IPS[\'TARGET\']);');
-        } catch (Exception $exc)
+        }
+        catch (Exception $exc)
         {
             trigger_error($exc->getMessage(), $exc->getCode());
             return;
@@ -34,39 +74,26 @@ class GitHubStatus extends IPSModule
         $this->Update();
     }
 
-    private function GetStatus()
-    {
-        $link = "status.github.com/api/last-message.json";
-
-        $ctx = stream_context_create(array(
-            'http' => array(
-                'timeout' => 5
-            )
-                )
-        );
-        $jsonstring = @file_get_contents('https://' . $link, false, $ctx);
-        if ($jsonstring === false)
-            $jsonstring = @file_get_contents('http://' . $link, false, $ctx);
-        if ($jsonstring === false)
-            throw new Exception("Cannot load GitHub Status.", E_USER_NOTICE);
-
-        $Data = json_decode($jsonstring);
-        if ($Data == null)
-        {
-            throw new Exception("Cannot load GitHub Status.", E_USER_NOTICE);
-        }
-
-        return $Data;
-    }
-
+    /**
+     * IPS-Instanz-Funktion 'GH_Update'.
+     * Liest den aktuellen Status von GitHub und visualisiert Diesen.
+     * 
+     * @access public
+     * @return boolean True bei Erfolg, sonst false.
+     */
     public function Update()
     {
         try
         {
-            $NewStatus = $this->GetStatus();            
-        } catch (Exception $exc)
+            $NewStatus = $this->GetStatus();
+        }
+        catch (Exception $exc)
         {
-            trigger_error($exc->getMessage(),$exc->getCode());
+            trigger_error($exc->getMessage(), $exc->getCode());
+            $this->SetValueString("LastMessage", "GitHub unreachable");
+            $this->SetValueInteger("TimeStamp", time());
+            $this->SetValueInteger("Status", 3);
+            $this->SetHidden("LastMessage", false);
             return false;
         }
 
@@ -94,7 +121,48 @@ class GitHubStatus extends IPSModule
         }
     }
 
-    protected function SetHidden($Ident, $isHidden)
+################## private
+
+    /**
+     * Liest den aktuellen Status von GitHub und liefert das Ergebnis.
+     * 
+     * @return object Ein Object mit den aktuellen Status.
+     * @throws Exception Wenn GitHub nicht erreichbar.
+     */
+    private function GetStatus()
+    {
+        $link = "status.github.com/api/last-message.json";
+
+        $ctx = stream_context_create(array(
+            'http' => array(
+                'timeout' => 5
+            )
+                )
+        );
+        $jsonstring = @file_get_contents('https://' . $link, false, $ctx);
+        if ($jsonstring === false)
+            $jsonstring = @file_get_contents('http://' . $link, false, $ctx);
+        if ($jsonstring === false)
+            throw new Exception("Cannot load GitHub Status.", E_USER_NOTICE);
+
+        $Data = json_decode($jsonstring);
+        if ($Data == null)
+        {
+            throw new Exception("Cannot load GitHub Status.", E_USER_NOTICE);
+        }
+
+        return $Data;
+    }
+
+    ################## DUMMYS / WOARKAROUNDS - private
+
+    /**
+     * Steuert die Sichtbarkeit von einem Objekt.
+     *  
+     * @param string $Ident Der Ident des Objektes.
+     * @param bool $isHidden True zum verstecken, false zum anzeigen.
+     */
+    private function SetHidden(string $Ident, bool $isHidden)
     {
         if (IPS_GetObject($this->GetIDForIdent($Ident))['ObjectIsHidden'] <> $isHidden)
         {
@@ -102,28 +170,52 @@ class GitHubStatus extends IPSModule
         }
     }
 
-    private function SetValueInteger($Ident, $value)
+    /**
+     * Setzt eine Integer-Variable
+     * 
+     * @param string $Ident Der Ident der Integer-Variable
+     * @param int $value Der neue Wert der Integer-Variable
+     */
+    private function SetValueInteger(string $Ident, int $value)
     {
         $id = $this->GetIDForIdent($Ident);
-            SetValueInteger($id, $value);
+        SetValueInteger($id, $value);
     }
 
-    private function SetValueString($Ident, $value)
+    /**
+     * Setzt eine String-Variable
+     * 
+     * @param string $Ident Der Ident der String-Variable
+     * @param string $value Der neue Wert der String-Variable
+     */
+    private function SetValueString(string $Ident, string $value)
     {
         $id = $this->GetIDForIdent($Ident);
-            SetValueString($id, $value);
+        SetValueString($id, $value);
     }
 
 ################## DUMMYS / WOARKAROUNDS - protected
-    //Remove on next Symcon update
 
+    /**
+     * Erstell und konfiguriert ein VariablenProfil für den Typ integer
+     *
+     * @access protected
+     * @param string $Name Name des Profils.
+     * @param string $Icon Name des Icon.
+     * @param string $Prefix Prefix für die Darstellung.
+     * @param string $Suffix Suffix für die Darstellung.
+     * @param int $MinValue Minimaler Wert.
+     * @param int $MaxValue Maximaler wert.
+     * @param int $StepSize Schrittweite
+     */
     protected function RegisterProfileInteger($Name, $Icon, $Prefix, $Suffix, $MinValue, $MaxValue, $StepSize)
     {
 
         if (!IPS_VariableProfileExists($Name))
         {
             IPS_CreateVariableProfile($Name, 1);
-        } else
+        }
+        else
         {
             $profile = IPS_GetVariableProfile($Name);
             if ($profile['ProfileType'] != 1)
@@ -135,13 +227,24 @@ class GitHubStatus extends IPSModule
         IPS_SetVariableProfileValues($Name, $MinValue, $MaxValue, $StepSize);
     }
 
+    /**
+     * Erstell und konfiguriert ein VariablenProfil für den Typ integer mit Assoziationen
+     *
+     * @access protected
+     * @param string $Name Name des Profils.
+     * @param string $Icon Name des Icon.
+     * @param string $Prefix Prefix für die Darstellung.
+     * @param string $Suffix Suffix für die Darstellung.
+     * @param array $Associations Assoziationen der Werte als Array.
+     */
     protected function RegisterProfileIntegerEx($Name, $Icon, $Prefix, $Suffix, $Associations)
     {
         if (sizeof($Associations) === 0)
         {
             $MinValue = 0;
             $MaxValue = 0;
-        } else
+        }
+        else
         {
             $MinValue = $Associations[0][0];
             $MaxValue = $Associations[sizeof($Associations) - 1][0];
@@ -155,6 +258,24 @@ class GitHubStatus extends IPSModule
         }
     }
 
+    /**
+     * Löscht ein Variablenprofile, sofern es nicht außerhalb dieser Instanz noch verwendet wird.
+     * @param string $Profil Name des zu löschenden Profils.
+     */
+    protected function UnregisterProfil(string $Profil)
+    {
+        if (!IPS_VariableProfileExists($Profil))
+            return;
+        foreach (IPS_GetVariableList() as $VarID)
+        {
+            if (IPS_GetParent($VarID) == $this->InstanceID)
+                continue;
+            if (IPS_GetVariable($VarID)['VariableCustomProfile'] == $Profil)
+                return;
+        }
+        IPS_DeleteVariableProfile($Profil);
+    }
+
 }
 
-?>
+/** @} */
