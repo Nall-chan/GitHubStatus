@@ -51,6 +51,9 @@ GUID des Modul (z.B. wenn Instanz per PHP angelegt werden soll):
   keine  
 
 **Changelog:**  
+ Version 1.02:  
+    - Fix: Timer in Create verschoben
+
  Version 1.01:  
     - Readme und Doku erweitert.  
 

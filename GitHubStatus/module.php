@@ -7,9 +7,9 @@
  * @package       GitHubStatus
  * @file          module.php
  * @author        Michael Tröger <micha@nall-chan.net>
- * @copyright     2016 Michael Tröger
+ * @copyright     2017 Michael Tröger
  * @license       https://creativecommons.org/licenses/by-nc-sa/4.0/ CC BY-NC-SA 4.0
- * @version       1.01
+ * @version       1.02
  */
 
 /**
@@ -27,6 +27,7 @@ class GitHubStatus extends IPSModule
     public function Create()
     {
         parent::Create();
+        $this->RegisterTimer("UpdateGitHubStatus", 300000, 'GH_Update($_IPS[\'TARGET\']);');
     }
 
     /**
@@ -61,16 +62,6 @@ class GitHubStatus extends IPSModule
         $this->RegisterVariableInteger("TimeStamp", "Aktualisierung", "~UnixTimestamp", 2);
         $this->RegisterVariableString("LastMessage", "Letzte Meldung", "", 3);
 
-        // 15 Minuten Timer
-        try
-        {
-            $this->RegisterTimer("UpdateGitHubStatus", 300000, 'GH_Update($_IPS[\'TARGET\']);');
-        }
-        catch (Exception $exc)
-        {
-            trigger_error($exc->getMessage(), $exc->getCode());
-            return;
-        }
         $this->Update();
     }
 
