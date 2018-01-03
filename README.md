@@ -1,3 +1,8 @@
+[![Version](https://img.shields.io/badge/Symcon-PHPModul-red.svg)](https://www.symcon.de/service/dokumentation/entwicklerbereich/sdk-tools/sdk-php/)
+[![Version](https://img.shields.io/badge/Modul%20Version-1.03-blue.svg)]()
+[![Version](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-green.svg)](https://creativecommons.org/licenses/by-nc-sa/4.0/)  
+[![Version](https://img.shields.io/badge/Symcon%20Version-4.3%20%3E-green.svg)](https://www.symcon.de/forum/threads/30857-IP-Symcon-4-3-%28Stable%29-Changelog)  
+
 # GitHub-Status
 
 Dieses Modul zeigt den aktuellen Status der GitHub-Dienste an.  
@@ -19,12 +24,12 @@ Dieses Modul zeigt den aktuellen Status der GitHub-Dienste an.
 
 ## 2. Voraussetzungen
 
- - IPS 4.x
+ - IPS 4.3 oder höher  
  
 ## 3. Installation
 
-   - IPS 4.x  
-        Über das 'Modul Control' folgende URL hinzufügen:  
+**IPS 4.3:**  
+   Bei privater Nutzung: Über das 'Module-Control' in IPS folgende URL hinzufügen.  
         `git://github.com/Nall-chan/IPSGitHubStatus.git`  
 
    **Bei kommerzieller Nutzung (z.B. als Errichter oder Integrator) wenden Sie sich bitte an den Autor.**  
@@ -43,6 +48,11 @@ Dieses Modul zeigt den aktuellen Status der GitHub-Dienste an.
 
 ## 5. Anhang
 
+**Spenden:**  
+Die Library ist für die nicht kommzerielle Nutzung kostenlos, Schenkungen als Unterstützung für den Autor werden hier akzeptiert:  
+
+<a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=G2SLW2MEMQZH2" target="_blank"><img src="https://www.paypalobjects.com/de_DE/DE/i/btn/btn_donate_LG.gif" border="0" /></a>
+
 **GUID's:**  
 GUID des Modul (z.B. wenn Instanz per PHP angelegt werden soll):  
  `{F790E9C6-B6D5-4FF1-B521-0B65A4CDA907}`  
@@ -51,6 +61,10 @@ GUID des Modul (z.B. wenn Instanz per PHP angelegt werden soll):
   keine  
 
 **Changelog:**  
+
+ Version 1.03:  
+    - Neu: Übersetzungen für IPS 4.3
+
  Version 1.02:  
     - Fix: Timer in Create verschoben
 

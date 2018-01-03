@@ -1,7 +1,9 @@
 {
     "translations": {
         "de": {
-            "Update": "Update"
+            "Update": "Update",
+            "Cannot load GitHub status.": "Konnte GitHub Status nicht laden.",
+            "Cannot decode GitHub status.": "Konnte GitHub Status nicht dekodieren."
         }
     }
 }

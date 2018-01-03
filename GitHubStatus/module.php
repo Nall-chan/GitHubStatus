@@ -9,7 +9,7 @@
  * @author        Michael Tröger <micha@nall-chan.net>
  * @copyright     2017 Michael Tröger
  * @license       https://creativecommons.org/licenses/by-nc-sa/4.0/ CC BY-NC-SA 4.0
- * @version       1.02
+ * @version       1.03
  */
 
 /**
@@ -37,7 +37,7 @@ class GitHubStatus extends IPSModule
      */
     public function Destroy()
     {
-        if (!IPS_InstanceExists($this->InstanceID))
+        if (IPS_InstanceExists($this->InstanceID))
             return;
         $this->UnregisterProfil("Status.GitHub");
         parent::Destroy();
@@ -80,7 +80,7 @@ class GitHubStatus extends IPSModule
         }
         catch (Exception $exc)
         {
-            trigger_error($exc->getMessage(), $exc->getCode());
+            trigger_error($exc->getMessage(), E_USER_NOTICE);
             $this->SetValueString("LastMessage", "GitHub unreachable");
             $this->SetValueInteger("TimeStamp", time());
             $this->SetValueInteger("Status", 3);
@@ -134,12 +134,12 @@ class GitHubStatus extends IPSModule
         if ($jsonstring === false)
             $jsonstring = @file_get_contents('http://' . $link, false, $ctx);
         if ($jsonstring === false)
-            throw new Exception("Cannot load GitHub Status.", E_USER_NOTICE);
+            throw new Exception("Cannot load GitHub status.");
 
         $Data = json_decode($jsonstring);
         if ($Data == null)
         {
-            throw new Exception("Cannot load GitHub Status.", E_USER_NOTICE);
+            throw new Exception("Cannot decode GitHub status.");
         }
 
         return $Data;
