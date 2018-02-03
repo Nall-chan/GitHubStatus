@@ -77,8 +77,7 @@ class GitHubStatus extends IPSModule
     {
         try {
             $NewStatus = $this->GetStatus();
-        }
-        catch (Exception $exc) {
+        } catch (Exception $exc) {
             trigger_error($exc->getMessage(), E_USER_NOTICE);
             $this->SetValueString("LastMessage", "GitHub unreachable");
             $this->SetValueInteger("TimeStamp", time());
@@ -202,8 +201,7 @@ class GitHubStatus extends IPSModule
 
         if (!IPS_VariableProfileExists($Name)) {
             IPS_CreateVariableProfile($Name, 1);
-        }
-        else {
+        } else {
             $profile = IPS_GetVariableProfile($Name);
             if ($profile['ProfileType'] != 1) {
                 throw new Exception("Variable profile type does not match for profile " . $Name);
@@ -230,8 +228,7 @@ class GitHubStatus extends IPSModule
         if (sizeof($Associations) === 0) {
             $MinValue = 0;
             $MaxValue = 0;
-        }
-        else {
+        } else {
             $MinValue = $Associations[0][0];
             $MaxValue = $Associations[sizeof($Associations) - 1][0];
         }
