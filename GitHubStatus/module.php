@@ -74,12 +74,10 @@ class GitHubStatus extends IPSModule
      */
     public function Update()
     {
-        try
-        {
+        try {
             $NewStatus = $this->GetStatus();
         }
-        catch (Exception $exc)
-        {
+        catch (Exception $exc) {
             trigger_error($exc->getMessage(), E_USER_NOTICE);
             $this->SetValueString("LastMessage", "GitHub unreachable");
             $this->SetValueInteger("TimeStamp", time());
@@ -95,8 +93,7 @@ class GitHubStatus extends IPSModule
 
         $this->SetValueInteger("TimeStamp", $TimeStamp);
 
-        switch ((string) $NewStatus->status)
-        {
+        switch ((string) $NewStatus->status) {
             case 'good':
                 $this->SetValueInteger("Status", 1);
                 $this->SetHidden("LastMessage", true);
@@ -137,8 +134,7 @@ class GitHubStatus extends IPSModule
             throw new Exception("Cannot load GitHub status.");
 
         $Data = json_decode($jsonstring);
-        if ($Data == null)
-        {
+        if ($Data == null) {
             throw new Exception("Cannot decode GitHub status.");
         }
 
@@ -155,8 +151,7 @@ class GitHubStatus extends IPSModule
      */
     private function SetHidden(string $Ident, bool $isHidden)
     {
-        if (IPS_GetObject($this->GetIDForIdent($Ident))['ObjectIsHidden'] <> $isHidden)
-        {
+        if (IPS_GetObject($this->GetIDForIdent($Ident))['ObjectIsHidden'] <> $isHidden) {
             IPS_SetHidden($this->GetIDForIdent($Ident), $isHidden);
         }
     }
@@ -202,12 +197,10 @@ class GitHubStatus extends IPSModule
     protected function RegisterProfileInteger($Name, $Icon, $Prefix, $Suffix, $MinValue, $MaxValue, $StepSize)
     {
 
-        if (!IPS_VariableProfileExists($Name))
-        {
+        if (!IPS_VariableProfileExists($Name)) {
             IPS_CreateVariableProfile($Name, 1);
         }
-        else
-        {
+        else {
             $profile = IPS_GetVariableProfile($Name);
             if ($profile['ProfileType'] != 1)
                 throw new Exception("Variable profile type does not match for profile " . $Name);
@@ -230,21 +223,18 @@ class GitHubStatus extends IPSModule
      */
     protected function RegisterProfileIntegerEx($Name, $Icon, $Prefix, $Suffix, $Associations)
     {
-        if (sizeof($Associations) === 0)
-        {
+        if (sizeof($Associations) === 0) {
             $MinValue = 0;
             $MaxValue = 0;
         }
-        else
-        {
+        else {
             $MinValue = $Associations[0][0];
             $MaxValue = $Associations[sizeof($Associations) - 1][0];
         }
 
         $this->RegisterProfileInteger($Name, $Icon, $Prefix, $Suffix, $MinValue, $MaxValue, 0);
 
-        foreach ($Associations as $Association)
-        {
+        foreach ($Associations as $Association) {
             IPS_SetVariableProfileAssociation($Name, $Association[0], $Association[1], $Association[2], $Association[3]);
         }
     }
@@ -257,8 +247,7 @@ class GitHubStatus extends IPSModule
     {
         if (!IPS_VariableProfileExists($Profil))
             return;
-        foreach (IPS_GetVariableList() as $VarID)
-        {
+        foreach (IPS_GetVariableList() as $VarID) {
             if (IPS_GetParent($VarID) == $this->InstanceID)
                 continue;
             if (IPS_GetVariable($VarID)['VariableCustomProfile'] == $Profil)
