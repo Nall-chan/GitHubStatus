@@ -14,7 +14,7 @@
 
 /**
  * GitHubStatus ist die Klasse für das IPS-Modul 'GitHub-Status'.
- * Erweitert IPSModule 
+ * Erweitert IPSModule
  */
 class GitHubStatus extends IPSModule
 {
@@ -53,10 +53,10 @@ class GitHubStatus extends IPSModule
     {
         parent::ApplyChanges();
 
-        $this->RegisterProfileIntegerEx("Status.GitHub", "Information", "", "", Array(
-            Array(1, "keine", "", 0x00FF00),
-            Array(2, "geringe ", "", 0xFF8000),
-            Array(3, "starke", "", 0xFF0000)
+        $this->RegisterProfileIntegerEx("Status.GitHub", "Information", "", "", array(
+            array(1, "keine", "", 0x00FF00),
+            array(2, "geringe ", "", 0xFF8000),
+            array(3, "starke", "", 0xFF0000)
         ));
 
         $this->RegisterVariableInteger("Status", "Beeinträchtigungen", "Status.GitHub", 1);
@@ -69,7 +69,7 @@ class GitHubStatus extends IPSModule
     /**
      * IPS-Instanz-Funktion 'GH_Update'.
      * Liest den aktuellen Status von GitHub und visualisiert Diesen.
-     * 
+     *
      * @access public
      * @return boolean True bei Erfolg, sonst false.
      */
@@ -109,11 +109,11 @@ class GitHubStatus extends IPSModule
         }
     }
 
-################## private
+    ################## private
 
     /**
      * Liest den aktuellen Status von GitHub und liefert das Ergebnis.
-     * 
+     *
      * @return object Ein Object mit den aktuellen Status.
      * @throws Exception Wenn GitHub nicht erreichbar.
      */
@@ -147,7 +147,7 @@ class GitHubStatus extends IPSModule
 
     /**
      * Steuert die Sichtbarkeit von einem Objekt.
-     *  
+     *
      * @param string $Ident Der Ident des Objektes.
      * @param bool $isHidden True zum verstecken, false zum anzeigen.
      */
@@ -160,7 +160,7 @@ class GitHubStatus extends IPSModule
 
     /**
      * Setzt eine Integer-Variable
-     * 
+     *
      * @param string $Ident Der Ident der Integer-Variable
      * @param int $value Der neue Wert der Integer-Variable
      */
@@ -172,7 +172,7 @@ class GitHubStatus extends IPSModule
 
     /**
      * Setzt eine String-Variable
-     * 
+     *
      * @param string $Ident Der Ident der String-Variable
      * @param string $value Der neue Wert der String-Variable
      */
@@ -182,7 +182,7 @@ class GitHubStatus extends IPSModule
         SetValueString($id, $value);
     }
 
-################## DUMMYS / WOARKAROUNDS - protected
+    ################## DUMMYS / WOARKAROUNDS - protected
 
     /**
      * Erstell und konfiguriert ein VariablenProfil für den Typ integer
@@ -198,7 +198,6 @@ class GitHubStatus extends IPSModule
      */
     protected function RegisterProfileInteger($Name, $Icon, $Prefix, $Suffix, $MinValue, $MaxValue, $StepSize)
     {
-
         if (!IPS_VariableProfileExists($Name)) {
             IPS_CreateVariableProfile($Name, 1);
         } else {
@@ -259,7 +258,6 @@ class GitHubStatus extends IPSModule
         }
         IPS_DeleteVariableProfile($Profil);
     }
-
 }
 
 /** @} */
