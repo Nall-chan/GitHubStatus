@@ -1,4 +1,4 @@
-<?
+<?php
 
 /**
  * @addtogroup githubstatus
@@ -37,8 +37,9 @@ class GitHubStatus extends IPSModule
      */
     public function Destroy()
     {
-        if (IPS_InstanceExists($this->InstanceID))
+        if (IPS_InstanceExists($this->InstanceID)) {
             return;
+        }
         $this->UnregisterProfil("Status.GitHub");
         parent::Destroy();
     }
@@ -128,10 +129,12 @@ class GitHubStatus extends IPSModule
                 )
         );
         $jsonstring = @file_get_contents('https://' . $link, false, $ctx);
-        if ($jsonstring === false)
+        if ($jsonstring === false) {
             $jsonstring = @file_get_contents('http://' . $link, false, $ctx);
-        if ($jsonstring === false)
+        }
+        if ($jsonstring === false) {
             throw new Exception("Cannot load GitHub status.");
+        }
 
         $Data = json_decode($jsonstring);
         if ($Data == null) {
@@ -202,8 +205,9 @@ class GitHubStatus extends IPSModule
         }
         else {
             $profile = IPS_GetVariableProfile($Name);
-            if ($profile['ProfileType'] != 1)
+            if ($profile['ProfileType'] != 1) {
                 throw new Exception("Variable profile type does not match for profile " . $Name);
+            }
         }
 
         IPS_SetVariableProfileIcon($Name, $Icon);
@@ -245,13 +249,16 @@ class GitHubStatus extends IPSModule
      */
     protected function UnregisterProfil(string $Profil)
     {
-        if (!IPS_VariableProfileExists($Profil))
+        if (!IPS_VariableProfileExists($Profil)) {
             return;
+        }
         foreach (IPS_GetVariableList() as $VarID) {
-            if (IPS_GetParent($VarID) == $this->InstanceID)
+            if (IPS_GetParent($VarID) == $this->InstanceID) {
                 continue;
-            if (IPS_GetVariable($VarID)['VariableCustomProfile'] == $Profil)
+            }
+            if (IPS_GetVariable($VarID)['VariableCustomProfile'] == $Profil) {
                 return;
+            }
         }
         IPS_DeleteVariableProfile($Profil);
     }
