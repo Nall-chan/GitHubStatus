@@ -1,5 +1,6 @@
 <?php
 
+declare(strict_types=1);
 /**
  * @addtogroup githubstatus
  * @{
@@ -7,9 +8,9 @@
  * @package       GitHubStatus
  * @file          module.php
  * @author        Michael Tröger <micha@nall-chan.net>
- * @copyright     2017 Michael Tröger
+ * @copyright     2019 Michael Tröger
  * @license       https://creativecommons.org/licenses/by-nc-sa/4.0/ CC BY-NC-SA 4.0
- * @version       1.03
+ * @version       2.00
  */
 
 /**
@@ -18,7 +19,6 @@
  */
 class GitHubStatus extends IPSModule
 {
-
     /**
      * Interne Funktion des SDK.
      *
@@ -27,7 +27,7 @@ class GitHubStatus extends IPSModule
     public function Create()
     {
         parent::Create();
-        $this->RegisterTimer("UpdateGitHubStatus", 300000, 'GH_Update($_IPS[\'TARGET\']);');
+        $this->RegisterTimer('UpdateGitHubStatus', 300 * 1000, 'GH_Update($_IPS[\'TARGET\']);');
     }
 
     /**
@@ -37,10 +37,9 @@ class GitHubStatus extends IPSModule
      */
     public function Destroy()
     {
-        if (IPS_InstanceExists($this->InstanceID)) {
-            return;
+        if (!IPS_InstanceExists($this->InstanceID)) {
+            $this->UnregisterProfil('Status.GitHub');
         }
-        $this->UnregisterProfil("Status.GitHub");
         parent::Destroy();
     }
 
@@ -53,16 +52,17 @@ class GitHubStatus extends IPSModule
     {
         parent::ApplyChanges();
 
-        $this->RegisterProfileIntegerEx("Status.GitHub", "Information", "", "", array(
-            array(1, "keine", "", 0x00FF00),
-            array(2, "geringe ", "", 0xFF8000),
-            array(3, "starke", "", 0xFF0000)
-        ));
+        $this->RegisterProfileIntegerEx('Status.GitHub', 'Information', '', '', [
+            [0, $this->Translate('Statuspage unreachable'), '', 0xFF8000],
+            [1, $this->Translate('none'), '', 0x00FF00],
+            [2, $this->Translate('minor'), '', 0xFF8000],
+            [3, $this->Translate('major'), '', 0xFF0000],
+            [4, $this->Translate('critical'), '', 0xFF0000]
+        ]);
 
-        $this->RegisterVariableInteger("Status", "Beeinträchtigungen", "Status.GitHub", 1);
-        $this->RegisterVariableInteger("TimeStamp", "Aktualisierung", "~UnixTimestamp", 2);
-        $this->RegisterVariableString("LastMessage", "Letzte Meldung", "", 3);
-
+        $this->RegisterVariableInteger('Status', $this->Translate('indicator'), 'Status.GitHub', 1);
+        $this->RegisterVariableInteger('TimeStamp', $this->Translate('updated'), '~UnixTimestamp', 2);
+        $this->RegisterVariableString('LastMessage', $this->Translate('description'), '', 3);
         $this->Update();
     }
 
@@ -76,114 +76,72 @@ class GitHubStatus extends IPSModule
     public function Update()
     {
         try {
-            $NewStatus = $this->GetStatus();
+            $NewStatus = $this->GetNewStatus();
         } catch (Exception $exc) {
+            $this->SendDebug('error', $exc->getMessage(), 0);
             trigger_error($exc->getMessage(), E_USER_NOTICE);
-            $this->SetValueString("LastMessage", "GitHub unreachable");
-            $this->SetValueInteger("TimeStamp", time());
-            $this->SetValueInteger("Status", 3);
-            $this->SetHidden("LastMessage", false);
+            $this->SetValue('LastMessage', 'Statuspage unreachable');
+            $this->SetValue('TimeStamp', time());
+            $this->SetValue('Status', 3);
             return false;
         }
+        $this->SetValue('LastMessage', (string) $NewStatus->status->description);
 
-        $this->SetValueString("LastMessage", (string) $NewStatus->body);
-
-        $Date = new DateTime((string) $NewStatus->created_on);
+        $Date = new DateTime((string) $NewStatus->page->updated_at);
         $TimeStamp = $Date->getTimestamp();
 
-        $this->SetValueInteger("TimeStamp", $TimeStamp);
+        $this->SetValue('TimeStamp', $TimeStamp);
 
-        switch ((string) $NewStatus->status) {
-            case 'good':
-                $this->SetValueInteger("Status", 1);
-                $this->SetHidden("LastMessage", true);
+        switch ((string) $NewStatus->status->indicator) {
+            case 'none':
+                $this->SetValue('Status', 1);
                 break;
             case 'minor':
-                $this->SetValueInteger("Status", 2);
-                $this->SetHidden("LastMessage", false);
+                $this->SetValue('Status', 2);
                 break;
             case 'major':
-                $this->SetValueInteger("Status", 3);
-                $this->SetHidden("LastMessage", false);
+                $this->SetValue('Status', 3);
+                break;
+            case 'critical':
+                $this->SetValue('Status', 4);
                 break;
         }
     }
 
     ################## private
-
     /**
      * Liest den aktuellen Status von GitHub und liefert das Ergebnis.
      *
      * @return object Ein Object mit den aktuellen Status.
      * @throws Exception Wenn GitHub nicht erreichbar.
      */
-    private function GetStatus()
+    private function GetNewStatus()
     {
-        $link = "status.github.com/api/last-message.json";
+        $link = 'kctbh9vrtdwd.statuspage.io/api/v2/status.json';
 
-        $ctx = stream_context_create(array(
-            'http' => array(
-                'timeout' => 5
-            )
-                )
-        );
+        $ctx = stream_context_create(
+                [
+                    'http' => [
+                        'timeout' => 5
+                    ]
+        ]);
         $jsonstring = @file_get_contents('https://' . $link, false, $ctx);
         if ($jsonstring === false) {
             $jsonstring = @file_get_contents('http://' . $link, false, $ctx);
         }
         if ($jsonstring === false) {
-            throw new Exception("Cannot load GitHub status.");
+            throw new Exception('Cannot load GitHub status.');
         }
-
+        $this->SendDebug('fetch', $jsonstring, 0);
         $Data = json_decode($jsonstring);
         if ($Data == null) {
-            throw new Exception("Cannot decode GitHub status.");
+            throw new Exception('Cannot decode GitHub status.');
         }
 
         return $Data;
     }
 
-    ################## DUMMYS / WOARKAROUNDS - private
-
-    /**
-     * Steuert die Sichtbarkeit von einem Objekt.
-     *
-     * @param string $Ident Der Ident des Objektes.
-     * @param bool $isHidden True zum verstecken, false zum anzeigen.
-     */
-    private function SetHidden(string $Ident, bool $isHidden)
-    {
-        if (IPS_GetObject($this->GetIDForIdent($Ident))['ObjectIsHidden'] <> $isHidden) {
-            IPS_SetHidden($this->GetIDForIdent($Ident), $isHidden);
-        }
-    }
-
-    /**
-     * Setzt eine Integer-Variable
-     *
-     * @param string $Ident Der Ident der Integer-Variable
-     * @param int $value Der neue Wert der Integer-Variable
-     */
-    private function SetValueInteger(string $Ident, int $value)
-    {
-        $id = $this->GetIDForIdent($Ident);
-        SetValueInteger($id, $value);
-    }
-
-    /**
-     * Setzt eine String-Variable
-     *
-     * @param string $Ident Der Ident der String-Variable
-     * @param string $value Der neue Wert der String-Variable
-     */
-    private function SetValueString(string $Ident, string $value)
-    {
-        $id = $this->GetIDForIdent($Ident);
-        SetValueString($id, $value);
-    }
-
     ################## DUMMYS / WOARKAROUNDS - protected
-
     /**
      * Erstell und konfiguriert ein VariablenProfil für den Typ integer
      *
@@ -203,7 +161,7 @@ class GitHubStatus extends IPSModule
         } else {
             $profile = IPS_GetVariableProfile($Name);
             if ($profile['ProfileType'] != 1) {
-                throw new Exception("Variable profile type does not match for profile " . $Name);
+                throw new Exception('Variable profile type does not match for profile ' . $Name);
             }
         }
 
@@ -258,6 +216,7 @@ class GitHubStatus extends IPSModule
         }
         IPS_DeleteVariableProfile($Profil);
     }
+
 }
 
 /** @} */
