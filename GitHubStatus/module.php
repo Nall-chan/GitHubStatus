@@ -216,7 +216,6 @@ class GitHubStatus extends IPSModule
         }
         IPS_DeleteVariableProfile($Profil);
     }
-
 }
 
 /** @} */
