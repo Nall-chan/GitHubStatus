@@ -1,7 +1,4 @@
 {
-	"elements":
-	[
-	],
 	"actions":
 	[
 		{ "type": "Button", "caption": "Update", "onClick": "GH_Update($id);" }
