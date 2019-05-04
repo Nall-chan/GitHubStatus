@@ -63,6 +63,9 @@ GUID des Modul (z.B. wenn Instanz per PHP angelegt werden soll):
 
 **Changelog:**  
 
+Version 2.10:  
+    - Release für IPS 5.1 und den Module-Store   
+
  Version 2.00:  
     - Neu: Neue Statuspage von GitHub wird verwendet.  
     - Neu: Anpassungen für IPS 5.1.  
