@@ -5,24 +5,23 @@ declare(strict_types=1);
  * @addtogroup githubstatus
  * @{
  *
- * @package       GitHubStatus
  * @file          module.php
+ *
  * @author        Michael Tröger <micha@nall-chan.net>
  * @copyright     2019 Michael Tröger
  * @license       https://creativecommons.org/licenses/by-nc-sa/4.0/ CC BY-NC-SA 4.0
+ *
  * @version       2.10
  */
 
 /**
  * GitHubStatus ist die Klasse für das IPS-Modul 'GitHub-Status'.
- * Erweitert IPSModule
+ * Erweitert IPSModule.
  */
 class GitHubStatus extends IPSModule
 {
     /**
      * Interne Funktion des SDK.
-     *
-     * @access public
      */
     public function Create()
     {
@@ -32,8 +31,6 @@ class GitHubStatus extends IPSModule
 
     /**
      * Interne Funktion des SDK.
-     *
-     * @access public
      */
     public function Destroy()
     {
@@ -45,8 +42,6 @@ class GitHubStatus extends IPSModule
 
     /**
      * Interne Funktion des SDK.
-     *
-     * @access public
      */
     public function ApplyChanges()
     {
@@ -70,8 +65,7 @@ class GitHubStatus extends IPSModule
      * IPS-Instanz-Funktion 'GH_Update'.
      * Liest den aktuellen Status von GitHub und visualisiert Diesen.
      *
-     * @access public
-     * @return boolean True bei Erfolg, sonst false.
+     * @return bool True bei Erfolg, sonst false.
      */
     public function Update()
     {
@@ -108,12 +102,14 @@ class GitHubStatus extends IPSModule
         }
     }
 
-    ################## private
+    //################# private
+
     /**
      * Liest den aktuellen Status von GitHub und liefert das Ergebnis.
      *
-     * @return object Ein Object mit den aktuellen Status.
      * @throws Exception Wenn GitHub nicht erreichbar.
+     *
+     * @return object Ein Object mit den aktuellen Status.
      */
     private function GetNewStatus()
     {
@@ -141,18 +137,18 @@ class GitHubStatus extends IPSModule
         return $Data;
     }
 
-    ################## DUMMYS / WOARKAROUNDS - protected
+    //################# DUMMYS / WOARKAROUNDS - protected
+
     /**
-     * Erstell und konfiguriert ein VariablenProfil für den Typ integer
+     * Erstell und konfiguriert ein VariablenProfil für den Typ integer.
      *
-     * @access protected
-     * @param string $Name Name des Profils.
-     * @param string $Icon Name des Icon.
-     * @param string $Prefix Prefix für die Darstellung.
-     * @param string $Suffix Suffix für die Darstellung.
-     * @param int $MinValue Minimaler Wert.
-     * @param int $MaxValue Maximaler wert.
-     * @param int $StepSize Schrittweite
+     * @param string $Name     Name des Profils.
+     * @param string $Icon     Name des Icon.
+     * @param string $Prefix   Prefix für die Darstellung.
+     * @param string $Suffix   Suffix für die Darstellung.
+     * @param int    $MinValue Minimaler Wert.
+     * @param int    $MaxValue Maximaler wert.
+     * @param int    $StepSize Schrittweite
      */
     protected function RegisterProfileInteger($Name, $Icon, $Prefix, $Suffix, $MinValue, $MaxValue, $StepSize)
     {
@@ -171,23 +167,22 @@ class GitHubStatus extends IPSModule
     }
 
     /**
-     * Erstell und konfiguriert ein VariablenProfil für den Typ integer mit Assoziationen
+     * Erstell und konfiguriert ein VariablenProfil für den Typ integer mit Assoziationen.
      *
-     * @access protected
-     * @param string $Name Name des Profils.
-     * @param string $Icon Name des Icon.
-     * @param string $Prefix Prefix für die Darstellung.
-     * @param string $Suffix Suffix für die Darstellung.
-     * @param array $Associations Assoziationen der Werte als Array.
+     * @param string $Name         Name des Profils.
+     * @param string $Icon         Name des Icon.
+     * @param string $Prefix       Prefix für die Darstellung.
+     * @param string $Suffix       Suffix für die Darstellung.
+     * @param array  $Associations Assoziationen der Werte als Array.
      */
     protected function RegisterProfileIntegerEx($Name, $Icon, $Prefix, $Suffix, $Associations)
     {
-        if (sizeof($Associations) === 0) {
+        if (count($Associations) === 0) {
             $MinValue = 0;
             $MaxValue = 0;
         } else {
             $MinValue = $Associations[0][0];
-            $MaxValue = $Associations[sizeof($Associations) - 1][0];
+            $MaxValue = $Associations[count($Associations) - 1][0];
         }
 
         $this->RegisterProfileInteger($Name, $Icon, $Prefix, $Suffix, $MinValue, $MaxValue, 0);
@@ -199,6 +194,7 @@ class GitHubStatus extends IPSModule
 
     /**
      * Löscht ein Variablenprofile, sofern es nicht außerhalb dieser Instanz noch verwendet wird.
+     *
      * @param string $Profil Name des zu löschenden Profils.
      */
     protected function UnregisterProfil(string $Profil)
@@ -218,4 +214,4 @@ class GitHubStatus extends IPSModule
     }
 }
 
-/** @} */
+/* @} */
