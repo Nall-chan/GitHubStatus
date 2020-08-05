@@ -3,12 +3,12 @@
     "name": "GitHubStatus",
     "type": 3,
     "vendor": "GitHub",
-    "aliases": 
-    [
+    "aliases": [
         "GitHub-Status"
     ],
     "parentRequirements": [],
     "childRequirements": [],
     "implemented": [],
-    "prefix": "GH"
+    "prefix": "GH",
+    "url": "https://github.com/Nall-chan/GitHubStatus"
 }

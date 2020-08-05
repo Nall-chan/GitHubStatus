@@ -1,14 +1,14 @@
 {
     "translations": {
         "de": {
-            "Statuspage unreachable":"Statusseite nicht erreichbar",
-            "none":"Keine",
-            "minor":"Gering",
-            "major":"Stark",
-            "critical":"Kritisch",
-            "indicator":"Beeinträchtigungen",
-            "updated":"Aktualisierung",
-            "description":"Beschreibung",
+            "Statuspage unreachable": "Statusseite nicht erreichbar",
+            "none": "Keine",
+            "minor": "Gering",
+            "major": "Stark",
+            "critical": "Kritisch",
+            "indicator": "Beeinträchtigungen",
+            "updated": "Aktualisierung",
+            "description": "Beschreibung",
             "Cannot load GitHub status.": "Konnte GitHub Status nicht laden.",
             "Cannot decode GitHub status.": "Konnte GitHub Status nicht dekodieren."
         }

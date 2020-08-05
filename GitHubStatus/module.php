@@ -8,10 +8,10 @@ declare(strict_types=1);
  * @file          module.php
  *
  * @author        Michael Tröger <micha@nall-chan.net>
- * @copyright     2019 Michael Tröger
+ * @copyright     2020 Michael Tröger
  * @license       https://creativecommons.org/licenses/by-nc-sa/4.0/ CC BY-NC-SA 4.0
  *
- * @version       2.10
+ * @version       2.11
  */
 
 /**
@@ -102,45 +102,8 @@ class GitHubStatus extends IPSModule
         }
     }
 
-    //################# private
-
     /**
-     * Liest den aktuellen Status von GitHub und liefert das Ergebnis.
-     *
-     * @throws Exception Wenn GitHub nicht erreichbar.
-     *
-     * @return object Ein Object mit den aktuellen Status.
-     */
-    private function GetNewStatus()
-    {
-        $link = 'kctbh9vrtdwd.statuspage.io/api/v2/status.json';
-
-        $ctx = stream_context_create(
-                [
-                    'http' => [
-                        'timeout' => 5
-                    ]
-        ]);
-        $jsonstring = @file_get_contents('https://' . $link, false, $ctx);
-        if ($jsonstring === false) {
-            $jsonstring = @file_get_contents('http://' . $link, false, $ctx);
-        }
-        if ($jsonstring === false) {
-            throw new Exception('Cannot load GitHub status.');
-        }
-        $this->SendDebug('fetch', $jsonstring, 0);
-        $Data = json_decode($jsonstring);
-        if ($Data == null) {
-            throw new Exception('Cannot decode GitHub status.');
-        }
-
-        return $Data;
-    }
-
-    //################# DUMMYS / WOARKAROUNDS - protected
-
-    /**
-     * Erstell und konfiguriert ein VariablenProfil für den Typ integer.
+     * Erstellt und konfiguriert ein VariablenProfil für den Typ integer.
      *
      * @param string $Name     Name des Profils.
      * @param string $Icon     Name des Icon.
@@ -167,7 +130,7 @@ class GitHubStatus extends IPSModule
     }
 
     /**
-     * Erstell und konfiguriert ein VariablenProfil für den Typ integer mit Assoziationen.
+     * Erstellt und konfiguriert ein VariablenProfil für den Typ integer mit Assoziationen.
      *
      * @param string $Name         Name des Profils.
      * @param string $Icon         Name des Icon.
@@ -211,6 +174,42 @@ class GitHubStatus extends IPSModule
             }
         }
         IPS_DeleteVariableProfile($Profil);
+    }
+
+    //################# private
+
+    /**
+     * Liest den aktuellen Status von GitHub und liefert das Ergebnis.
+     *
+     * @throws Exception Wenn GitHub nicht erreichbar.
+     *
+     * @return object Ein Object mit den aktuellen Status.
+     */
+    private function GetNewStatus()
+    {
+        $link = 'kctbh9vrtdwd.statuspage.io/api/v2/status.json';
+
+        $ctx = stream_context_create(
+            [
+                'http' => [
+                    'timeout' => 5
+                ]
+            ]
+        );
+        $JsonString = @file_get_contents('https://' . $link, false, $ctx);
+        if ($JsonString === false) {
+            $JsonString = @file_get_contents('http://' . $link, false, $ctx);
+        }
+        if ($JsonString === false) {
+            throw new Exception('Cannot load GitHub status.');
+        }
+        $this->SendDebug('fetch', $JsonString, 0);
+        $Data = json_decode($JsonString);
+        if ($Data == null) {
+            throw new Exception('Cannot decode GitHub status.');
+        }
+
+        return $Data;
     }
 }
 

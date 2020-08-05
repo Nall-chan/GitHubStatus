@@ -1,6 +1,9 @@
 {
-	"actions":
-	[
-		{ "type": "Button", "caption": "Update", "onClick": "GH_Update($id);" }
-        ]	
+	"actions": [
+		{
+			"type": "Button",
+			"caption": "Update",
+			"onClick": "GH_Update($id);"
+		}
+	]
 }
