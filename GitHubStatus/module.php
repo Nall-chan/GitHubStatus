@@ -1,8 +1,12 @@
 <?php
 
 declare(strict_types=1);
+
+eval('declare(strict_types=1);namespace GitHubStatus {?>' . file_get_contents(__DIR__ . '/../libs/helper/DebugHelper.php') . '}');
+eval('declare(strict_types=1);namespace GitHubStatus {?>' . file_get_contents(__DIR__ . '/../libs/helper/VariableProfileHelper.php') . '}');
+
 /**
- * @addtogroup githubstatus
+ * @addtogroup GitHubStatus
  * @{
  *
  * @file          module.php
@@ -11,15 +15,22 @@ declare(strict_types=1);
  * @copyright     2020 Michael Tröger
  * @license       https://creativecommons.org/licenses/by-nc-sa/4.0/ CC BY-NC-SA 4.0
  *
- * @version       2.11
+ * @version       3.00
  */
 
 /**
  * GitHubStatus ist die Klasse für das IPS-Modul 'GitHub-Status'.
  * Erweitert IPSModule.
+ *
+ * @method bool SendDebug(string $Message, mixed $Data, int $Format)
+ * @method void RegisterProfileIntegerEx(string $Name, string $Icon, string $Prefix, string $Suffix, array $Associations, int $MaxValue = -1, float $StepSize = 0)
+ * @method void UnregisterProfile(string $Name)
  */
 class GitHubStatus extends IPSModule
 {
+    use \GitHubStatus\VariableProfileHelper;
+    use \GitHubStatus\DebugHelper;
+
     /**
      * Interne Funktion des SDK.
      */
@@ -35,7 +46,7 @@ class GitHubStatus extends IPSModule
     public function Destroy()
     {
         if (!IPS_InstanceExists($this->InstanceID)) {
-            $this->UnregisterProfil('Status.GitHub');
+            $this->UnregisterProfile('Status.GitHub');
         }
         parent::Destroy();
     }
@@ -48,13 +59,19 @@ class GitHubStatus extends IPSModule
         parent::ApplyChanges();
 
         $this->RegisterProfileIntegerEx('Status.GitHub', 'Information', '', '', [
-            [0, $this->Translate('Statuspage unreachable'), '', 0xFF8000],
-            [1, $this->Translate('none'), '', 0x00FF00],
-            [2, $this->Translate('minor'), '', 0xFF8000],
-            [3, $this->Translate('major'), '', 0xFF0000],
-            [4, $this->Translate('critical'), '', 0xFF0000]
+            [0, 'Statuspage unreachable', '', 0xFF8000],
+            [1, 'none', '', 0x00FF00],
+            [2, 'minor', '', 0xFF8000],
+            [3, 'major', '', 0xFF0000],
+            [4, 'critical', '', 0xFF0000]
         ]);
-
+        $this->RegisterProfileIntegerEx('Components.GitHub', 'Information', '', '', [
+            [0, 'Statuspage unreachable', '', 0xFF8000],
+            [1, 'operational', '', 0x00FF00],
+            [2, 'degraded performance', '', 0xFF8000],
+            [3, 'partial outage', '', 0xFF0000],
+            [4, 'major outage', '', 0xFF0000]
+        ]);
         $this->RegisterVariableInteger('Status', $this->Translate('indicator'), 'Status.GitHub', 1);
         $this->RegisterVariableInteger('TimeStamp', $this->Translate('updated'), '~UnixTimestamp', 2);
         $this->RegisterVariableString('LastMessage', $this->Translate('description'), '', 3);
@@ -69,24 +86,21 @@ class GitHubStatus extends IPSModule
      */
     public function Update()
     {
-        try {
-            $NewStatus = $this->GetNewStatus();
-        } catch (Exception $exc) {
-            $this->SendDebug('error', $exc->getMessage(), 0);
-            trigger_error($exc->getMessage(), E_USER_NOTICE);
+        $NewStatus = $this->GetNewStatus();
+        if (!$NewStatus) {
             $this->SetValue('LastMessage', 'Statuspage unreachable');
             $this->SetValue('TimeStamp', time());
-            $this->SetValue('Status', 3);
+            $this->SetValue('Status', 0);
+            trigger_error($this->Translate('Cannot load GitHub status.'), E_USER_NOTICE);
             return false;
         }
-        $this->SetValue('LastMessage', (string) $NewStatus->status->description);
+        $this->SetValue('LastMessage', (string) $NewStatus['status']['description']);
 
-        $Date = new DateTime((string) $NewStatus->page->updated_at);
+        $Date = new DateTime((string) $NewStatus['page']['updated_at']);
         $TimeStamp = $Date->getTimestamp();
-
         $this->SetValue('TimeStamp', $TimeStamp);
 
-        switch ((string) $NewStatus->status->indicator) {
+        switch ((string) $NewStatus['status']['indicator']) {
             case 'none':
                 $this->SetValue('Status', 1);
                 break;
@@ -100,83 +114,32 @@ class GitHubStatus extends IPSModule
                 $this->SetValue('Status', 4);
                 break;
         }
-    }
-
-    /**
-     * Erstellt und konfiguriert ein VariablenProfil für den Typ integer.
-     *
-     * @param string $Name     Name des Profils.
-     * @param string $Icon     Name des Icon.
-     * @param string $Prefix   Prefix für die Darstellung.
-     * @param string $Suffix   Suffix für die Darstellung.
-     * @param int    $MinValue Minimaler Wert.
-     * @param int    $MaxValue Maximaler wert.
-     * @param int    $StepSize Schrittweite
-     */
-    protected function RegisterProfileInteger($Name, $Icon, $Prefix, $Suffix, $MinValue, $MaxValue, $StepSize)
-    {
-        if (!IPS_VariableProfileExists($Name)) {
-            IPS_CreateVariableProfile($Name, 1);
-        } else {
-            $profile = IPS_GetVariableProfile($Name);
-            if ($profile['ProfileType'] != 1) {
-                throw new Exception('Variable profile type does not match for profile ' . $Name);
-            }
-        }
-
-        IPS_SetVariableProfileIcon($Name, $Icon);
-        IPS_SetVariableProfileText($Name, $Prefix, $Suffix);
-        IPS_SetVariableProfileValues($Name, $MinValue, $MaxValue, $StepSize);
-    }
-
-    /**
-     * Erstellt und konfiguriert ein VariablenProfil für den Typ integer mit Assoziationen.
-     *
-     * @param string $Name         Name des Profils.
-     * @param string $Icon         Name des Icon.
-     * @param string $Prefix       Prefix für die Darstellung.
-     * @param string $Suffix       Suffix für die Darstellung.
-     * @param array  $Associations Assoziationen der Werte als Array.
-     */
-    protected function RegisterProfileIntegerEx($Name, $Icon, $Prefix, $Suffix, $Associations)
-    {
-        if (count($Associations) === 0) {
-            $MinValue = 0;
-            $MaxValue = 0;
-        } else {
-            $MinValue = $Associations[0][0];
-            $MaxValue = $Associations[count($Associations) - 1][0];
-        }
-
-        $this->RegisterProfileInteger($Name, $Icon, $Prefix, $Suffix, $MinValue, $MaxValue, 0);
-
-        foreach ($Associations as $Association) {
-            IPS_SetVariableProfileAssociation($Name, $Association[0], $Association[1], $Association[2], $Association[3]);
-        }
-    }
-
-    /**
-     * Löscht ein Variablenprofile, sofern es nicht außerhalb dieser Instanz noch verwendet wird.
-     *
-     * @param string $Profil Name des zu löschenden Profils.
-     */
-    protected function UnregisterProfil(string $Profil)
-    {
-        if (!IPS_VariableProfileExists($Profil)) {
-            return;
-        }
-        foreach (IPS_GetVariableList() as $VarID) {
-            if (IPS_GetParent($VarID) == $this->InstanceID) {
+        foreach ($NewStatus['components'] as $Component) {
+            $Ident = $Component['id'];
+            if ($Ident == '0l2p9nhqnxpd') {
                 continue;
             }
-            if (IPS_GetVariable($VarID)['VariableCustomProfile'] == $Profil) {
-                return;
+            $this->SendDebug('Result', $Component, 0);
+            $Name = $Component['name'];
+            $Position = $Component['position'];
+            $this->RegisterVariableInteger($Ident, $this->Translate($Name), 'Components.GitHub', $Position + 3);
+
+            switch ((string) $Component['status']) {
+                case 'operational':
+                    $this->SetValue($Ident, 1);
+                    break;
+                case 'degraded_performance':
+                    $this->SetValue($Ident, 2);
+                    break;
+                case 'partial_outage':
+                    $this->SetValue($Ident, 3);
+                    break;
+                case 'major_outage':
+                    $this->SetValue($Ident, 4);
+                    break;
             }
         }
-        IPS_DeleteVariableProfile($Profil);
     }
-
-    //################# private
 
     /**
      * Liest den aktuellen Status von GitHub und liefert das Ergebnis.
@@ -187,28 +150,14 @@ class GitHubStatus extends IPSModule
      */
     private function GetNewStatus()
     {
-        $link = 'kctbh9vrtdwd.statuspage.io/api/v2/status.json';
-
-        $ctx = stream_context_create(
-            [
-                'http' => [
-                    'timeout' => 5
-                ]
-            ]
-        );
-        $JsonString = @file_get_contents('https://' . $link, false, $ctx);
-        if ($JsonString === false) {
-            $JsonString = @file_get_contents('http://' . $link, false, $ctx);
+        $link = 'https://www.githubstatus.com/api/v2/summary.json';
+        $this->SendDebug('Fetch', $link, 0);
+        $JsonString = @Sys_GetURLContentEx($link, ['Timeout'=> 5000]);
+        $this->SendDebug('Result', $JsonString, 0);
+        if (!$JsonString) {
+            return false;
         }
-        if ($JsonString === false) {
-            throw new Exception('Cannot load GitHub status.');
-        }
-        $this->SendDebug('fetch', $JsonString, 0);
-        $Data = json_decode($JsonString);
-        if ($Data == null) {
-            throw new Exception('Cannot decode GitHub status.');
-        }
-
+        $Data = json_decode($JsonString, true);
         return $Data;
     }
 }

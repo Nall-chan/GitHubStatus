@@ -1,11 +1,13 @@
-[![Version](https://img.shields.io/badge/Symcon-PHPModul-red.svg)](https://www.symcon.de/service/dokumentation/entwicklerbereich/sdk-tools/sdk-php/)
-[![Version](https://img.shields.io/badge/Modul%20Version-2.00-blue.svg)]()
+[![SDK](https://img.shields.io/badge/Symcon-PHPModul-red.svg)](https://www.symcon.de/service/dokumentation/entwicklerbereich/sdk-tools/sdk-php/)
+[![Version](https://img.shields.io/badge/Modul%20Version-3.00-blue.svg)]()
 [![Version](https://img.shields.io/badge/Symcon%20Version-5.1%20%3E-green.svg)](https://www.symcon.de/service/dokumentation/installation/migrationen/v50-v51-q2-2019/)  
 [![License](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-green.svg)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
 [![Check Style](https://github.com/Nall-chan/GitHubStatus/workflows/Check%20Style/badge.svg)](https://github.com/Nall-chan/GitHubStatus/actions) 
-[![Run Tests](https://github.com/Nall-chan/GitHubStatus/workflows/Run%20Tests/badge.svg)](https://github.com/Nall-chan/GitHubStatus/actions) 
+[![Run Tests](https://github.com/Nall-chan/GitHubStatus/workflows/Run%20Tests/badge.svg)](https://github.com/Nall-chan/GitHubStatus/actions)  
+[![Spenden](https://www.paypalobjects.com/de_DE/DE/i/btn/btn_donate_SM.gif)](#9-spenden)
+[![Wunschliste](https://img.shields.io/badge/Wunschliste-Amazon-ff69fb.svg)](#9-spenden) 
 
-# GitHub-Status
+# GitHub-Status<!-- omit in toc -->  
 
 Dieses Modul zeigt den aktuellen Status der GitHub-Dienste an.  
 
@@ -16,13 +18,15 @@ Dieses Modul zeigt den aktuellen Status der GitHub-Dienste an.
 - [1. Funktionsumfang](#1-funktionsumfang)
 - [2. Voraussetzungen](#2-voraussetzungen)
 - [3. Installation](#3-installation)
-- [4. Funktionsreferenz](#4-funktionsreferenz)
-- [5. Anhang](#5-anhang)
-- [6. Lizenz](#6-lizenz)
+- [5. Einrichten der Instanzen in IPS](#5-einrichten-der-instanzen-in-ips)
+- [6. Statusvariablen und Profile](#6-statusvariablen-und-profile)
+- [7. Spenden](#7-spenden)
+- [8. Changelog](#8-changelog)
+- [9. Lizenz](#9-lizenz)
 
 ## 1. Funktionsumfang
 
- Über die JSON-API von  [Git-Hub](https://github.com) wird der aktuelle Status ermittelt und in Variablen abgebildet.  
+ Über die JSON-API von  [GitHub](https://github.com) wird der aktuelle Status ermittelt und in Variablen abgebildet.  
 
 ## 2. Voraussetzungen
 
@@ -30,40 +34,36 @@ Dieses Modul zeigt den aktuellen Status der GitHub-Dienste an.
  
 ## 3. Installation
 
-   Bei privater Nutzung: Über den 'Module-Store' in IPS das Modul `GitHub Status` hinzufügen.  
+   Bei privater Nutzung: Über den `Module-Store` in IPS das Modul `GitHub Status` hinzufügen.  
 
    **Bei kommerzieller Nutzung (z.B. als Errichter oder Integrator) wenden Sie sich bitte an den Autor.**  
 
-## 4. Funktionsreferenz
+## 5. Einrichten der Instanzen in IPS
 
-```php
-    boolean GH_Update( integer $InstanceID );
-```
- Startet eine neue Abfrage.  
+   Unter Instanz hinzufügen ist die Instanz `GitHubStatus` unter dem Hersteller `GitHub` aufgeführt.  
 
-**Beispiel:**  
-```php
-    GH_Update(12345);
-```
+## 6. Statusvariablen und Profile
 
-## 5. Anhang
+   ![Logischer Baum](imgs/vars.png)  
+   ![Statusvariablen](imgs/wf.png)  
 
-**Spenden:**  
-Die Library ist für die nicht kommerzielle Nutzung kostenlos, Schenkungen als Unterstützung für den Autor werden hier akzeptiert:  
+   Die Statusvariablen werden automatisch angelegt.
 
-<a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=G2SLW2MEMQZH2" target="_blank"><img src="https://www.paypalobjects.com/de_DE/DE/i/btn/btn_donate_LG.gif" border="0" /></a>
+## 7. Spenden  
 
-**GUID:**  
-GUID des Modul (z.B. wenn Instanz per PHP angelegt werden soll):  
- `{F790E9C6-B6D5-4FF1-B521-0B65A4CDA907}`  
+  Die Library ist für die nicht kommerzielle Nutzung kostenlos, Schenkungen als Unterstützung für den Autor werden hier akzeptiert:  
 
-**Eigenschaften von GitHubStatus:**  
-  keine  
+<a href="https://www.paypal.com/donate?hosted_button_id=G2SLW2MEMQZH2" target="_blank"><img src="https://www.paypalobjects.com/de_DE/DE/i/btn/btn_donate_LG.gif" border="0" /></a>
 
-**Changelog:**  
+[![Wunschliste](https://img.shields.io/badge/Wunschliste-Amazon-ff69fb.svg)](https://www.amazon.de/hz/wishlist/ls/YU4AI9AQT9F?ref_=wl_share)
+
+## 8. Changelog  
+
+Version 3.00:  
+    - Statusmeldungen der Dienste erweitert.  
 
 Version 2.10:  
-    - Release für IPS 5.1 und den Module-Store   
+    - Release für IPS 5.1 und den Module-Store .  
 
  Version 2.00:  
     - Neu: Neue Statuspage von GitHub wird verwendet.  
@@ -81,6 +81,6 @@ Version 2.10:
  Version 1.0:  
     - Erstes Release  
 
-## 6. Lizenz
+## 9. Lizenz
 
   [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/)  

@@ -9,8 +9,12 @@
             "indicator": "Beeinträchtigungen",
             "updated": "Aktualisierung",
             "description": "Beschreibung",
+            "operational": "Betriebsbereit",
+            "degraded performance": "Leistung verschlechtert",
+            "partial outage": "Teilausfall",
+            "major outage": "Totalausfall",
             "Cannot load GitHub status.": "Konnte GitHub Status nicht laden.",
-            "Cannot decode GitHub status.": "Konnte GitHub Status nicht dekodieren."
+            "This module is free for non-commercial use,\r\nDonations in support of the author are accepted here:": "Dieses Modul ist für die nicht kommerzielle Nutzung kostenlos,\r\nSchenkungen als Unterstützung für den Autor werden hier akzeptiert:"
         }
     }
 }
