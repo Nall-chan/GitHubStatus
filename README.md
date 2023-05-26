@@ -1,13 +1,13 @@
 [![SDK](https://img.shields.io/badge/Symcon-PHPModul-red.svg)](https://www.symcon.de/service/dokumentation/entwicklerbereich/sdk-tools/sdk-php/)
-[![Version](https://img.shields.io/badge/Modul%20Version-3.00-blue.svg)]()
-[![Version](https://img.shields.io/badge/Symcon%20Version-5.1%20%3E-green.svg)](https://www.symcon.de/service/dokumentation/installation/migrationen/v50-v51-q2-2019/)  
+[![Version](https://img.shields.io/badge/Modul%20Version-3.01-blue.svg)]()
+![Version](https://img.shields.io/badge/Symcon%20Version-7.0%20%3E-green.svg)  
 [![License](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-green.svg)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
 [![Check Style](https://github.com/Nall-chan/GitHubStatus/workflows/Check%20Style/badge.svg)](https://github.com/Nall-chan/GitHubStatus/actions) 
 [![Run Tests](https://github.com/Nall-chan/GitHubStatus/workflows/Run%20Tests/badge.svg)](https://github.com/Nall-chan/GitHubStatus/actions)  
 [![Spenden](https://www.paypalobjects.com/de_DE/DE/i/btn/btn_donate_SM.gif)](#9-spenden)
 [![Wunschliste](https://img.shields.io/badge/Wunschliste-Amazon-ff69fb.svg)](#9-spenden) 
 
-# GitHub-Status<!-- omit in toc -->  
+# GitHub-Status <!-- omit in toc -->  
 
 Dieses Modul zeigt den aktuellen Status der GitHub-Dienste an.  
 
@@ -30,7 +30,7 @@ Dieses Modul zeigt den aktuellen Status der GitHub-Dienste an.
 
 ## 2. Voraussetzungen
 
- - IPS 5.1 oder höher  
+ - IPS 7.0 oder höher  
  
 ## 3. Installation
 
@@ -58,6 +58,9 @@ Dieses Modul zeigt den aktuellen Status der GitHub-Dienste an.
 [![Wunschliste](https://img.shields.io/badge/Wunschliste-Amazon-ff69fb.svg)](https://www.amazon.de/hz/wishlist/ls/YU4AI9AQT9F?ref_=wl_share)
 
 ## 8. Changelog  
+
+Version 3.01:  
+    - Version für IPS 7.0.  
 
 Version 3.00:  
     - Statusmeldungen der Dienste erweitert.  

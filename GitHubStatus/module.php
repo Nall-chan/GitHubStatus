@@ -15,7 +15,7 @@ eval('declare(strict_types=1);namespace GitHubStatus {?>' . file_get_contents(__
  * @copyright     2020 Michael Tröger
  * @license       https://creativecommons.org/licenses/by-nc-sa/4.0/ CC BY-NC-SA 4.0
  *
- * @version       3.00
+ * @version       3.01
  */
 
 /**
@@ -26,7 +26,7 @@ eval('declare(strict_types=1);namespace GitHubStatus {?>' . file_get_contents(__
  * @method void RegisterProfileIntegerEx(string $Name, string $Icon, string $Prefix, string $Suffix, array $Associations, int $MaxValue = -1, float $StepSize = 0)
  * @method void UnregisterProfile(string $Name)
  */
-class GitHubStatus extends IPSModule
+class GitHubStatus extends IPSModuleStrict
 {
     use \GitHubStatus\VariableProfileHelper;
     use \GitHubStatus\DebugHelper;
@@ -34,7 +34,7 @@ class GitHubStatus extends IPSModule
     /**
      * Interne Funktion des SDK.
      */
-    public function Create()
+    public function Create(): void
     {
         parent::Create();
         $this->RegisterTimer('UpdateGitHubStatus', 300 * 1000, 'GH_Update($_IPS[\'TARGET\']);');
@@ -43,7 +43,7 @@ class GitHubStatus extends IPSModule
     /**
      * Interne Funktion des SDK.
      */
-    public function Destroy()
+    public function Destroy(): void
     {
         if (!IPS_InstanceExists($this->InstanceID)) {
             $this->UnregisterProfile('Status.GitHub');
@@ -54,7 +54,7 @@ class GitHubStatus extends IPSModule
     /**
      * Interne Funktion des SDK.
      */
-    public function ApplyChanges()
+    public function ApplyChanges(): void
     {
         parent::ApplyChanges();
 
@@ -81,10 +81,8 @@ class GitHubStatus extends IPSModule
     /**
      * IPS-Instanz-Funktion 'GH_Update'.
      * Liest den aktuellen Status von GitHub und visualisiert Diesen.
-     *
-     * @return bool True bei Erfolg, sonst false.
      */
-    public function Update()
+    public function Update(): void
     {
         $NewStatus = $this->GetNewStatus();
         if (!$NewStatus) {
@@ -92,7 +90,6 @@ class GitHubStatus extends IPSModule
             $this->SetValue('TimeStamp', time());
             $this->SetValue('Status', 0);
             trigger_error($this->Translate('Cannot load GitHub status.'), E_USER_NOTICE);
-            return false;
         }
         $this->SetValue('LastMessage', (string) $NewStatus['status']['description']);
 
@@ -148,7 +145,7 @@ class GitHubStatus extends IPSModule
      *
      * @return object Ein Object mit den aktuellen Status.
      */
-    private function GetNewStatus()
+    private function GetNewStatus(): false|array
     {
         $link = 'https://www.githubstatus.com/api/v2/summary.json';
         $this->SendDebug('Fetch', $link, 0);
