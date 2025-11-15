@@ -1,11 +1,11 @@
 [![SDK](https://img.shields.io/badge/Symcon-PHPModul-red.svg)](https://www.symcon.de/service/dokumentation/entwicklerbereich/sdk-tools/sdk-php/)
-[![Version](https://img.shields.io/badge/Modul%20Version-3.01-blue.svg)]()
-![Version](https://img.shields.io/badge/Symcon%20Version-7.0%20%3E-green.svg)  
+[![Module Version](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2FNall-chan%2FGitHubStatus%2Frefs%2Fheads%2Fmaster%2Flibrary.json&query=%24.version&label=Modul%20Version&color=blue)]()
+[![Symcon Version](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2FNall-chan%2FGitHubStatus%2Frefs%2Fheads%2Fmaster%2Flibrary.json&query=%24.compatibility.version&suffix=%3E&label=Symcon%20Version&color=green)](https://www.symcon.de/de/service/dokumentation/installation/migrationen/v80-v81-q3-2025/)  
 [![License](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-green.svg)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
-[![Check Style](https://github.com/Nall-chan/GitHubStatus/workflows/Check%20Style/badge.svg)](https://github.com/Nall-chan/GitHubStatus/actions) 
+[![Check Style](https://github.com/Nall-chan/GitHubStatus/workflows/Check%20Style/badge.svg)](https://github.com/Nall-chan/GitHubStatus/actions)
 [![Run Tests](https://github.com/Nall-chan/GitHubStatus/workflows/Run%20Tests/badge.svg)](https://github.com/Nall-chan/GitHubStatus/actions)  
-[![Spenden](https://www.paypalobjects.com/de_DE/DE/i/btn/btn_donate_SM.gif)](#9-spenden)
-[![Wunschliste](https://img.shields.io/badge/Wunschliste-Amazon-ff69fb.svg)](#9-spenden) 
+[![PayPal.Me](https://img.shields.io/badge/PayPal-Me-lightblue.svg)](#7-spenden)
+[![Wunschliste](https://img.shields.io/badge/Wunschliste-Amazon-ff69fb.svg)](#7-spenden)  
 
 # GitHub-Status <!-- omit in toc -->  
 
@@ -19,7 +19,7 @@ Dieses Modul zeigt den aktuellen Status der GitHub-Dienste an.
 - [2. Voraussetzungen](#2-voraussetzungen)
 - [3. Installation](#3-installation)
 - [5. Einrichten der Instanzen in IPS](#5-einrichten-der-instanzen-in-ips)
-- [6. Statusvariablen und Profile](#6-statusvariablen-und-profile)
+- [6. Statusvariablen](#6-statusvariablen)
 - [7. Spenden](#7-spenden)
 - [8. Changelog](#8-changelog)
 - [9. Lizenz](#9-lizenz)
@@ -29,8 +29,8 @@ Dieses Modul zeigt den aktuellen Status der GitHub-Dienste an.
  Über die JSON-API von  [GitHub](https://github.com) wird der aktuelle Status ermittelt und in Variablen abgebildet.  
 
 ## 2. Voraussetzungen
-
- - IPS 7.0 oder höher  
+  
+ - IP-Symcon ab Version 8.1
  
 ## 3. Installation
 
@@ -42,10 +42,11 @@ Dieses Modul zeigt den aktuellen Status der GitHub-Dienste an.
 
    Unter Instanz hinzufügen ist die Instanz `GitHubStatus` unter dem Hersteller `GitHub` aufgeführt.  
 
-## 6. Statusvariablen und Profile
+## 6. Statusvariablen 
 
    ![Logischer Baum](imgs/vars.png)  
-   ![Statusvariablen](imgs/wf.png)  
+   ![Kachel Visu](imgs/tile.png)  
+   ![WebFront](imgs/wf.png)  
 
    Die Statusvariablen werden automatisch angelegt.
 
@@ -53,11 +54,14 @@ Dieses Modul zeigt den aktuellen Status der GitHub-Dienste an.
 
   Die Library ist für die nicht kommerzielle Nutzung kostenlos, Schenkungen als Unterstützung für den Autor werden hier akzeptiert:  
 
-<a href="https://www.paypal.com/donate?hosted_button_id=G2SLW2MEMQZH2" target="_blank"><img src="https://www.paypalobjects.com/de_DE/DE/i/btn/btn_donate_LG.gif" border="0" /></a>
+[![PayPal.Me](https://img.shields.io/badge/PayPal-Me-lightblue.svg)](https://paypal.me/Nall4chan)  
 
 [![Wunschliste](https://img.shields.io/badge/Wunschliste-Amazon-ff69fb.svg)](https://www.amazon.de/hz/wishlist/ls/YU4AI9AQT9F?ref_=wl_share)
 
 ## 8. Changelog  
+
+Version 3.10:  
+    - Version für IPS 8.1.  
 
 Version 3.01:  
     - Version für IPS 7.0.  

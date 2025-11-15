@@ -4,9 +4,9 @@
     "name": "GitHub Status Library",
     "url": "https://github.com/Nall-chan/GitHubStatus",
     "compatibility": {
-        "version": "7.0"
+        "version": "8.1"
     },
-    "version": "3.01",
-    "build": 301,
-    "date": 1596607320
+    "version": "3.10",
+    "build": 310,
+    "date": 1763221385
 }
